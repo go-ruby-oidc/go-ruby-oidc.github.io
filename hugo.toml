@@ -1,0 +1,31 @@
+baseURL = "https://go-ruby-oidc.github.io/"
+title = "go-ruby-oidc"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[params.phases]]
+  name = "Discovery"
+  status = "ready"
+  blurb = "Fetch and parse `.well-known/openid-configuration` into `ProviderMetadata` (issuer, authorization / token / userinfo / jwks endpoints, supported scopes / claims / algs), enforcing the issuer match."
+[[params.phases]]
+  name = "JWKS & key selection"
+  status = "ready"
+  blurb = "Fetch, parse and **cache** a provider's JSON Web Key Set (`KeySet` / `JWKSCache`) and select the signing key by `kid` / `alg`, with a one-shot refetch on a rotated key. RSA and EC keys are materialised from the JWK `n` / `e` and `crv` / `x` / `y`."
+[[params.phases]]
+  name = "ID-token verification"
+  status = "ready"
+  blurb = "`Verifier` parses the ID token (via go-ruby-jwt), verifies the JWS signature (RS / ES / PS / HS families; **`none` is always rejected**), and validates the OIDC claims: `iss` exact match, `aud` contains the client id, `exp` / `iat` / `nbf` with leeway, `nonce`, `azp`, and `at_hash` / `c_hash` when present."
+[[params.phases]]
+  name = "Authorization-Code + PKCE"
+  status = "ready"
+  blurb = "`Client.AuthCodeURL` builds the authorization request URL (scope `openid`, state, nonce, PKCE **S256** challenge) and `Client.Exchange` swaps the code for tokens via go-ruby-oauth2 and verifies the returned ID token."
+[[params.phases]]
+  name = "UserInfo"
+  status = "ready"
+  blurb = "Call the userinfo endpoint with the bearer access token and return the claims — the final hop of the login round-trip."
+[[params.phases]]
+  name = "HTTP seam & differential coverage"
+  status = "ready"
+  blurb = "Every network fetch goes through the injectable `Doer` interface — tests mock it, a host binds it, the core never opens a socket. Every rejection branch (tampered / expired / wrong-`aud` / wrong-`iss` / wrong-`nonce` / bad-`azp` / bad-hash) is covered; 100% coverage, gofmt + go vet clean, green across 6 arches including the big-endian lane."
