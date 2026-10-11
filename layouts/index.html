@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{{/* Dark Reader repaints pages that already draw their own dark theme, as this one does: ask it to stand aside. */}}
+<meta name="darkreader-lock">
 <title>{{ .Site.Title }} — a pure-Go OpenID Connect library, MRI-faithful, no cgo</title>
 <meta name="description" content="go-ruby-oidc — A pure-Go (no cgo) OpenID Connect library: discovery, JWKS, ID-token verification, Authorization-Code + PKCE and UserInfo, built on go-ruby-oauth2 and go-ruby-jwt.">
 <style>
